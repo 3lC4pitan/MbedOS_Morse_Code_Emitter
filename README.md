@@ -4,7 +4,7 @@
 
 **Project:** Morse code emitter application project using NUCLEO-F746ZG(STM32F746ZG)
 
-![STM32F746ZG](https://www.st.com/bin/ecommerce/api/image.PF262631.en.feature-description-include-personalized-no-cpn-large.jpg)
+![STM32F746ZG]([https://www.st.com/bin/ecommerce/api/image.PF262631.en.feature-description-include-personalized-no-cpn-large.jpg](https://os.mbed.com/media/cache/platforms/Nucleo144_perf_logo_1024_rDHDP6L.jpg.250x250_q85.jpg))
 
 
 
