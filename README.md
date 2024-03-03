@@ -2,7 +2,11 @@
 
 ## University MBED Assignment
 
-**Project:** Morse code emitter application project (STM32F746ZG)
+**Project:** Morse code emitter application project using NUCLEO-F746ZG(STM32F746ZG)
+
+![STM32F746ZG](https://www.st.com/bin/ecommerce/api/image.PF262631.en.feature-description-include-personalized-no-cpn-large.jpg)
+
+
 
 ### Assignment Requirements:
 
