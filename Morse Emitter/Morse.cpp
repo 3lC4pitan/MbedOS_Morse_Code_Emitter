@@ -1,44 +1,42 @@
 #include "Morse.h"
-#include <ctime>
+#include <ctime> //may not be used
 
 
-//constructor
+//constructors
 
-Morse::Morse():_led1(LED1),_led2(LED2),_led3(LED3)
- {
-  //constructor
-    
-    //_led[3] = {LED1,LED2,LED3};
-  
- }
+Morse::Morse() : _led1(LED1), _led2(LED2), _led3(LED3), _timeInMillisec(100)
+{
+}
 
- Morse::Morse(DigitalOut led1, DigitalOut led2, DigitalOut led3):_led2(led1),_led3(led2),_led1(led3)
- {}
+Morse::Morse(DigitalOut led1, DigitalOut led2, DigitalOut led3) : _led1(led1), _led2(led2), _led3(led3), _timeInMillisec(100)
+{
+}
 
 
- int Morse::timeInMillisec(int ms = 100){
-     return ms;
- }
+void Morse::setTimeInMillisec(int ms)
+{
+    _timeInMillisec = ms;
+}
  
- //blink dot function
-
-void Morse::blinkDot(int a){
-    for(int i=0; i<a; i++){
-        for(int j=0; j<2; j++){
+//blink dot function
+void Morse::blinkDot(int a)
+{
+    for (int i = 0; i < a; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
             _led2 = !_led2;
-            timeUnit(1);    
+            timeUnit(1);
         }
-        
-        /*led2 = !led2;
-        timeUnit(1);
-        led2 = !led2;
-        timeUnit(1);*/
     }
 }
 
+
 //blink dash function
-void Morse::blinkDash(int b){
-    for(int i=0; i<b; i++){
+void Morse::blinkDash(int b)
+{
+    for (int i = 0; i < b; i++)
+    {
         _led2 = !_led2;
         timeUnit(2);
         _led2 = !_led2;
@@ -46,78 +44,79 @@ void Morse::blinkDash(int b){
     }
 }
 
-//new page signal: blinking all leds simultaneously x 2
-void Morse::newPageSig(){
 
-    int j;
-    for (j=0; j<4 ;j++){
-    _led1 = !_led1;
-    _led2 = !_led2;
-    _led3 = !_led3;
-    timeUnit(1);
+//new page signal: blinking all leds simultaneously x 2
+void Morse::newPageSignal()
+{
+    for (int j = 0; j < 4; j++)
+    {
+        _led1 = !_led1;
+        _led2 = !_led2;
+        _led3 = !_led3;
+        timeUnit(1);
     }
 }
 
 
 //start signal: blinking leds 1>2>3>2>1
-void Morse::startSig(){
-    int i = 0;
-    DigitalOut led[] = {LED1,LED2,LED3};
+void Morse::startSignal()
+{
+    DigitalOut led[] = {_led1, _led2, _led3};
 
-    for(i=0;i<3;i++){
-        for(int j=0; j<2; j++){
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
             led[i] = !led[i];
-            timeUnit(1);    
+            timeUnit(1);
         }
-        /*led[i] = !led[i];
-        timeUnit(1);
-        led[i] = !led[i];
-        timeUnit(1);*/
     }
-    for(i=1; i>=0; i--){
-        for(int j=0; j<2; j++){
+    for (int i = 1; i >= 0; i--)
+    {
+        for (int j = 0; j < 2; j++)
+        {
             led[i] = !led[i];
-            timeUnit(1);    
+            timeUnit(1);
         }
-        /*led[i] = !led[i];
-        timeUnit(1);
-        led[i] = !led[i];
-        timeUnit(1);*/
     }
     timeUnit(3);
 }
 
 //time unit function
-void Morse::timeUnit(int i){
-    //dot 1 = 1u
-    //dash 111 = 3u 
-    //dot_dash 0 = 1u
-    //short gap (_letters) 000 = 3u
-     //medium gap (_words) 0000000 = 7u
+void Morse::timeUnit(int i)
+{
 
-    switch (i) {
+     /** 
+      *dot 1 = 1u
+      *dash 111 = 3u 
+      *dot_dash 0 = 1u
+      *short gap (_letters) 000 = 3u
+      *medium gap (_words) 0000000 = 7u
+      **/
+
+    switch (i)
+    {
     case 1:
-        thread_sleep_for(timeInMillisec() * 1);
-    break;
+        thread_sleep_for(_timeInMillisec);
+        break;
 
     case 2:
-        thread_sleep_for(timeInMillisec() * 3);
-    break;
+        thread_sleep_for(_timeInMillisec * 3);
+        break;
 
     case 3:
-        thread_sleep_for(timeInMillisec() * 7);
-    break;
+        thread_sleep_for(_timeInMillisec * 7);
+        break;
 
     default:
-    break;
+        break;
     }
-      
 }
 
 
 //translate chars to Morse code function
 
-void Morse::char2Morse(char c){
+void Morse::charToMorse(char c){
     
     switch (c) {
 
