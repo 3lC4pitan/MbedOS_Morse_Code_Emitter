@@ -13,9 +13,10 @@
 BufferedSerial pc(USBTX, USBRX);
 
 char buf[BUF_SIZE];
-char s[BUF_SIZE+1];
-int buf_count = 0;
-char message[BUF_SIZE+1];
+//char s[BUF_SIZE+1];
+//int buf_count = 0;
+//char message[BUF_SIZE+1];
+char receivedDataBuffer[BUF_SIZE + 1];
 bool new_message_received = false;
 
 void on_serial_activity();
@@ -38,29 +39,23 @@ int main()
     while (true)
     {
 
-        if (new_message_received) {  
-            int len = strlen(message);
+            if (newMessageReceived)
+                    {
+                        int len = strlen(receivedDataBuffer);
+                        printf("Received a length %d message: %s \n", len, receivedDataBuffer);
+                        morse.startSignal();
             
-
-            printf("Received a length %d message: %s \n", len, message);
-            morse.startSig();
-
-        for(int i = 0; i<len; i++) {
-            morse.char2Morse(message[i]);
-
-            /*led1 = !led1;
-            led3 = !led3;
-            timeUnit(3);
-            led1 = !led1;
-            led3 = !led3;
-            timeUnit(3);*/    
-        }
-            morse.newPageSig();
-            new_message_received = false;
-        }
-        thread_sleep_for(WAIT_TIME_MS);
-        
-    }
+                        for (int i = 0; i < len; i++)
+                        {
+                            morse.charToMorse(receivedDataBuffer[i]);
+                        }
+            
+                        morse.newPageSignal();
+                        newMessageReceived = false;
+                    }
+            
+                    thread_sleep_for(WAIT_TIME_MS)
+                        
 }
 
 char *strnchr(char *s, size_t count, char c)
@@ -81,22 +76,35 @@ char *strnchr(char *s, size_t count, char c)
 void on_serial_activity()
 {
     if (pc.readable()) {
-        int len = pc.read(buf + buf_count, BUF_SIZE - buf_count);
-        if (len > 0) {
-            char *pos = strnchr(buf + buf_count, len, '\r');
-            buf_count += len;
-            if (pos) {
-                strncpy(message, buf, pos - buf);
-                message[pos-buf+1] = '\0';
-                new_message_received = true;
-                if (pos - buf + 1 < buf_count) {
-                    strncpy(buf, pos+1, buf_count - (pos - buf + 1));
-                    buf_count -= pos - buf + 1;
-                }
-                else {
-                    buf_count = 0;
-                }
-            }
-        }
+                                /** 
+                                    int len = pc.read(buf + buf_count, BUF_SIZE - buf_count);
+                                if (len > 0) {
+                                    char *pos = strnchr(buf + buf_count, len, '\r');
+                                    buf_count += len;
+                                    if (pos) {
+                                        strncpy(message, buf, pos - buf);
+                                        message[pos-buf+1] = '\0';
+                                        new_message_received = true;
+                                        if (pos - buf + 1 < buf_count) {
+                                            strncpy(buf, pos+1, buf_count - (pos - buf + 1));
+                                            buf_count -= pos - buf + 1;
+                                        }
+                                        else {
+                                            buf_count = 0;
+                                        }
+                                    }
+                                }
+                                **/
+                        int len = pc.read(buf, BUF_SIZE);
+                        if (len > 0)
+                        {
+                            char *pos = strnchr(buf, len, '\r');
+                            if (pos)
+                            {
+                                strncpy(receivedDataBuffer, buf, pos - buf);
+                                receivedDataBuffer[pos - buf] = '\0';
+                                newMessageReceived = true;
+                            }
+                        }
     }
 }
